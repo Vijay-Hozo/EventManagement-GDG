@@ -4,8 +4,9 @@ const controller = require('../Controller/EventController');
 const adminauth = require('../Middleware/AdminAuth');
 
 router.post('/event',adminauth,controller.newevent);
-router.get('/getallevents',controller.getallevents);
-router.get('/geteventbyid/:id',adminauth,controller.geteventbyid);
+router.get('/event',controller.getallevents);
+router.get('/adminevent',adminauth,controller.getallevents);
+router.get('/event/:id',adminauth,controller.geteventbyid);
 router.put('/event/:id',controller.updateevent);
 router.delete('/event/:id',controller.deleteevent);
 

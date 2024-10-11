@@ -1,18 +1,22 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const EventModel = require("../Model/EventModel");
+const AdminModel = require("../Model/adminModel")
 
 const newevent = async(req,res)=>{
-    const{eventname,eventDate,eventTime,eventLocation,eventDescription,eventFee,tickets} = req.body;
+    const{eventName,eventDate,eventTime,eventLocation,eventDescription,eventFee,tickets,eventImage} = req.body;
+    const adminid = req.user.id;
     try{
         const newevent = new EventModel({
-            eventname,
+            adminid,
+            eventName,
             eventDate,
             eventTime,
             eventLocation,
             eventDescription,
             eventFee,
-            tickets
+            tickets,
+            eventImage
         })
         await newevent.save();
         res.status(200).json({
@@ -44,10 +48,37 @@ const getallevents = async(req,res)=>{
     }
 }
 
+const getadminevents = async(req,res)=>{
+    const adminid = req.user.id;
+    try{
+        const admin = await AdminModel.findById(adminid);
+        if(!admin){
+            return res.status(401).json({
+                status:"failure",
+                message:"admin not found"
+            })
+        }
+        const events = await EventModel.find({adminid}).populate(
+            'eventName eventDescription eventDate eventTime eventLocation eventFee tickets eventImage'
+        )
+        res.status(200).json({
+            status:"success",
+            message:"event fetched",
+            events
+        })
+    }
+    catch(err){
+        res.status(400).json({
+            status:"failure",
+            message : "incorrect id"
+        })
+    }
+}
+
 const geteventbyid = async(req,res)=>{
     const event_id = req.params.id;
     try{
-        const event = await AdminModel.findById(event_id);
+        const event = await EventModel.findById(event_id);
         if(!event){
             res.status(400).json({
                 status:"failure",
@@ -114,4 +145,4 @@ const deleteevent = async(req,res)=>{
     }
 }
 
-module.exports = {newevent,getallevents,geteventbyid,updateevent,deleteevent};
+module.exports = {newevent,getallevents,getadminevents,geteventbyid,updateevent,deleteevent};

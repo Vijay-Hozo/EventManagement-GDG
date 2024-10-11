@@ -31,6 +31,11 @@ const eventSchema = new mongoose.Schema({
     },
     eventImage : {
         type : String,
+    },
+    adminid : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'admins',
+        required:true
     }
 })
 
