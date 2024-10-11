@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const EventModel = require("../Model/EventModel");
 const AdminModel = require("../Model/adminModel")
+const {v4} = require("uuid");
 
 const newevent = async(req,res)=>{
     const{eventName,eventDate,eventTime,eventLocation,eventDescription,eventFee,tickets,eventImage} = req.body;
@@ -82,12 +83,13 @@ const geteventbyid = async(req,res)=>{
         if(!event){
             res.status(400).json({
                 status:"failure",
-                message:"Event not found"
+                message:"Event not found",
             })
         }
         res.status(200).json({
             status:"success",
-            message :"Event found"
+            message :"Event found",
+            event
         })
     }
     catch(err){
@@ -111,7 +113,8 @@ const updateevent = async(req,res)=>{
         await event.save();
         res.status(200).json({
             status:"success",
-            message :"Event updated"
+            message :"Event updated",
+            event
         })
     }
     catch(err){
