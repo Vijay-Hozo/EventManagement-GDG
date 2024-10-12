@@ -34,7 +34,7 @@ const eventSchema = new mongoose.Schema({
     },
     adminid : {
         type: mongoose.Schema.Types.ObjectId,
-        ref : 'admins',
+        ref : 'Admin',
         required:true
     }
 })

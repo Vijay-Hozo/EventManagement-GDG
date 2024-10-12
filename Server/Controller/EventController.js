@@ -9,7 +9,7 @@ const newevent = async(req,res)=>{
     const adminid = req.user.id;
     try{
         const newevent = new EventModel({
-            adminid,
+            adminid : adminid,
             eventName,
             eventDate,
             eventTime,
