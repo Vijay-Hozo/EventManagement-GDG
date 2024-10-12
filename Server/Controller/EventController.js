@@ -49,32 +49,34 @@ const getallevents = async(req,res)=>{
     }
 }
 
-const getadminevents = async(req,res)=>{
-    const adminid = req.user.id;
-    try{
-        const admin = await AdminModel.findById(adminid);
-        if(!admin){
+const getadminevents = async (req, res) => {
+    const adminid = req.user.id; 
+    try {
+        const admin = await AdminModel.findById(adminid); 
+        if (!admin) {
             return res.status(401).json({
-                status:"failure",
-                message:"admin not found"
-            })
+                status: "failure",
+                message: "admin not found"
+            });
         }
-        const events = await EventModel.find({adminid}).populate(
-            'eventName eventDescription eventDate eventTime eventLocation eventFee tickets eventImage'
-        )
+
+        const events = await EventModel.find({ adminId: adminid }) 
+            .populate('eventName eventDescription eventDate eventTime eventLocation eventFee tickets eventImage'); 
+
         res.status(200).json({
-            status:"success",
-            message:"event fetched",
+            status: "success",
+            message: "events fetched successfully",
             events
-        })
-    }
-    catch(err){
+        });
+    } catch (err) {
+        console.error(err); 
         res.status(400).json({
-            status:"failure",
-            message : "incorrect id"
-        })
+            status: "failure",
+            message: "an error occurred while fetching events"
+        });
     }
-}
+};
+
 
 const geteventbyid = async(req,res)=>{
     const event_id = req.params.id;
