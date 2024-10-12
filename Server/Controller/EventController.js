@@ -9,7 +9,7 @@ const newevent = async(req,res)=>{
     const adminid = req.user.id;
     try{
         const newevent = new EventModel({
-            adminid : adminid,
+            adminid ,
             eventName,
             eventDate,
             eventTime,
@@ -60,8 +60,10 @@ const getadminevents = async (req, res) => {
             });
         }
 
-        const events = await EventModel.find({ adminId: adminid }) 
-            .populate('eventName eventDescription eventDate eventTime eventLocation eventFee tickets eventImage'); 
+        const events = await EventModel.find({ adminid }) 
+            .populate('adminid',
+                'eventName eventDescription eventDate eventTime eventLocation eventFee tickets eventImage'
+            ); 
 
         res.status(200).json({
             status: "success",
