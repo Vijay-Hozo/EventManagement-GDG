@@ -100,30 +100,36 @@ const geteventbyid = async(req,res)=>{
     }
 }
 
-const updateevent = async(req,res)=>{
+const updateevent = async (req, res) => {
     const event_id = req.params.id;
-    try{
-        const event = await EventModel.findByIdAndUpdate(event_id);
-        if(!event){
-            res.status(400).json({
-                status:"failure",
-                message:"Event not found"
-            })
-        }
-        await event.save();
-        res.status(200).json({
-            status:"success",
-            message :"Event updated",
-            event
-        })
+    const updatedData = req.body; 
+  
+    try {
+      const event = await EventModel.findByIdAndUpdate(
+        event_id,
+        updatedData,
+        { new: true, runValidators: true });
+  
+      if (!event) {
+        return res.status(404).json({
+          status: "failure",
+          message: "Event not found"
+        });
+      }
+  
+      res.status(200).json({
+        status: "success",
+        message: "Event updated successfully",
+        event
+      });
+    } catch (err) {
+      res.status(400).json({
+        status: "failure",
+        message: err.message
+      });
     }
-    catch(err){
-        res.status(400).json({
-            status:"failure",
-            message:err.message
-        })
-    }
-}
+  };
+  
 
 const deleteevent = async(req,res)=>{
     const event_id = req.params.id;
