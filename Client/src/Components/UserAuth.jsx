@@ -1,26 +1,32 @@
 import React, { useState } from 'react';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const UserAuth = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
 
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    password: '',
-  });
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLogin) {
-      console.log('Login form submitted', formData);
-    } else {
-      console.log('Signup form submitted', formData);
+    const url = isLogin ? `${import.meta.env.VITE_SERVER_URL}/loginuser` : `${import.meta.env.VITE_SERVER_URL}/newuser`;
+    
+    try {
+      const res = await axios.post(url, {
+        username: isLogin ? undefined : username, 
+        email,
+        phone: isLogin ? undefined : phone, 
+        password
+      });
+
+      localStorage.setItem("token", res.data.token);
+      navigate("/eventpage");
+    } catch (err) {
+      console.log(err.message);
     }
   };
 
@@ -57,8 +63,8 @@ const UserAuth = () => {
                 type="text"
                 name="name"
                 placeholder="Enter your name"
-                value={formData.name}
-                onChange={handleChange}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full p-2 mt-1 text-gray-900 rounded-md bg-gray-100 focus:outline-none"
                 required={!isLogin} 
               />
@@ -71,8 +77,8 @@ const UserAuth = () => {
               type="email"
               name="email"
               placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full p-2 mt-1 text-gray-900 rounded-md bg-gray-100 focus:outline-none"
               required
             />
@@ -85,8 +91,8 @@ const UserAuth = () => {
                 type="tel"
                 name="phone"
                 placeholder="Enter your phone number"
-                value={formData.phone}
-                onChange={handleChange}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 className="w-full p-2 mt-1 text-gray-900 rounded-md bg-gray-100 focus:outline-none"
                 required={!isLogin} 
               />
@@ -99,8 +105,8 @@ const UserAuth = () => {
               type="password"
               name="password"
               placeholder="Enter your password"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full p-2 mt-1 text-gray-900 rounded-md bg-gray-100 focus:outline-none"
               required
             />

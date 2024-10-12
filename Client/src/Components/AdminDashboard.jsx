@@ -1,96 +1,82 @@
-import React from "react";
-import djimage from "../assets/Dj.jpg";
-
-const events = [
-  {
-    id: 1,
-    image: djimage,
-    eventname: "Dhrona",
-    eventdescription: "This is an event called Dhrona.",
-    eventtime: "9:00 AM",
-    eventdate: "18-09-2024",
-    eventlocation: "SECE",
-    eventfee: "100",
-    tickets: "200",
-  },
-  {
-    id: 2,
-    image: djimage,
-    eventname: "Dhrona",
-    eventdescription: "This is an event called Dhrona.",
-    eventtime: "9:00 AM",
-    eventdate: "18-09-2024",
-    eventlocation: "SECE",
-    eventfee: "100",
-    tickets: "200",
-  },
-  {
-    id: 3,
-    image: djimage,
-    eventname: "Dhrona",
-    eventdescription: "This is an event called Dhrona.",
-    eventtime: "9:00 AM",
-    eventdate: "18-09-2024",
-    eventlocation: "SECE",
-    eventfee: "100",
-    tickets: "200",
-  },
-  {
-    id: 4,
-    image: djimage,
-    eventname: "Dhrona",
-    eventdescription: "This is an event called Dhrona.",
-    eventtime: "9:00 AM",
-    eventdate: "18-09-2024",
-    eventlocation: "SECE",
-    eventfee: "100",
-    tickets: "200",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AdminDashboard = () => {
+  const [events, setEvents] = useState([]);
+
+  useEffect(() => {
+    getAdminEvents();
+  }, []);
+
+  const getAdminEvents = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_URL}/adminevent`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) throw new Error("Failed to fetch events");
+      
+      const data = await response.json();
+      setEvents(data.events);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
   return (
-    <div className="bg-[#080D18] w-full min-h-screen text-white">
-      {/* Header */}
-      <div className="flex justify-between items-center text-xl p-4 bg-[#1A1F2E] shadow-md">
-        <h1 className="font-bold text-2xl">InVITE</h1>
-        <h1 className="font-medium text-lg">Admin Dashboard</h1>
-        <h1 className="text-lg">Welcome, User</h1>
-      </div>
+    <div className="bg-gradient-to-b from-[#080D18] to-[#1A1F2E] min-h-screen text-white">
+      <header className="bg-[#1A1F2E] shadow-lg p-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h2 className="text-lg">Welcome, Admin</h2>
+          <Link to="/"><h1 className="font-bold text-2xl">InVITE</h1></Link>
+          <Link to="/addevent"><button
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 flex items-center"
+          >
+            Add Event
+          </button></Link>
+        </div>
+      </header>
 
-      {/* Events Section */}
-      <h1 className="text-center font-semibold text-3xl mt-8">My Events</h1>
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <h1 className="text-center font-bold text-3xl mb-8">My Events</h1>
 
-      <div className="mt-8 px-4">
-        <ul className="flex flex-wrap justify-center gap-6">
-          {events.map(({ id, image, eventname, eventdescription }) => (
-            <li
-              key={id}
-              className="bg-[#1A1F2E] text-white p-6 rounded-lg shadow-lg "
-            >
-              <img
-                src={image}
-                alt={eventname}
-                className="w-full h-[220px] rounded-lg mb-4"
-              />
-              <h1 className="text-center text-2xl font-semibold mb-2">
-                {eventname}
-              </h1>
-              <p className="text-sm mb-4 text-center text-gray-300">
-                {eventdescription}
-              </p>
-              <div className="flex justify-between items-center">
-                <button className="bg-blue-500 text-black font-bold py-1 px-4 rounded-lg hover:bg-blue-600 ">
-                  Edit
-                </button>
-                <button className="bg-red-500 text-white font-bold py-1 px-4 rounded-lg hover:bg-red-600 ">
-                  Delete
-                </button>
+        
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {events.map(({ _id, eventImage, eventName, eventDescription }) => (
+              <div
+                key={_id}
+                className="bg-[#2A2F3E] rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition duration-300"
+              >
+                <img
+                  src={eventImage}
+                  alt={eventName}
+                  className="w-full h-56 object-cover"
+                />
+                <div className="p-6">
+                  <h2 className="text-xl font-semibold mb-2 ">
+                    {eventName}
+                  </h2>
+                  <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+                    {eventDescription}
+                  </p>
+                  <div className="flex justify-center items-center">
+                    <Link to={`/manageevent/${_id}`}>
+                      <button className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300">
+                        Manage Event
+                      </button>
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+            ))}
+          </div>
+      </main>
     </div>
   );
 };

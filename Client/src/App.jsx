@@ -8,10 +8,13 @@ import ManageEvent from './Components/ManageEvent';
 import Auth from './Components/Auth';
 import UserAuth from './Components/UserAuth';
 import EventBook from './Components/EventBook';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
-    <div>
+    <>
+      <ToastContainer />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -20,11 +23,11 @@ const App = () => {
           <Route path="/admindashboard" element={<AdminDashboard />}></Route>
           <Route path="/addevent" element={<AddEvent />}></Route>
           <Route path="/eventpage" element={<EventPage />}></Route>
-          <Route path="/event" element={<EventBook />}></Route>
-          <Route path="/manageevent" element={<ManageEvent />}></Route>
+          <Route path="/eventbook/:id" element={<EventBook />}></Route>
+          <Route path="/manageevent/:id" element={<ManageEvent />}></Route>
         </Routes>
       </BrowserRouter>
-    </div>
+    </>
   )
 }
 
