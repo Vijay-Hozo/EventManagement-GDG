@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import djimage from "../assets/Dj.jpg";
+import { Link } from "react-router-dom";
 
 const EventBook = () => {
   const { id } = useParams();
@@ -41,7 +42,7 @@ const EventBook = () => {
       <div className="flex justify-around items-center mt-14">
         <div className="w-full">
           <img
-            src={event.eventImage || djimage} // fallback to default image if eventImage is null
+            src={event.eventImage || djimage} 
             alt={event.eventName || "Event Image"}
             className="rounded-md"
           />

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const UserAuth = () => {
   const navigate = useNavigate();
@@ -13,22 +14,34 @@ const UserAuth = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     const url = isLogin ? `${import.meta.env.VITE_SERVER_URL}/loginuser` : `${import.meta.env.VITE_SERVER_URL}/newuser`;
-    
-    try {
-      const res = await axios.post(url, {
-        username: isLogin ? undefined : username, 
-        email,
-        phone: isLogin ? undefined : phone, 
-        password
-      });
-
-      localStorage.setItem("token", res.data.token);
-      navigate("/eventpage");
-    } catch (err) {
-      console.log(err.message);
-    }
+  
+    await toast.promise(
+      (async () => {
+        try {
+          const res = await axios.post(url, {
+            username: isLogin ? undefined : username,
+            email,
+            phone: isLogin ? undefined : phone,
+            password,
+          });
+  
+          localStorage.setItem("token", res.data.token);
+          navigate("/eventpage");
+        } catch (err) {
+          console.log(err.message);
+          throw new Error("Authentication failed");
+        }
+      })(),
+      {
+        loading: "Processing...",
+        success: "Authentication successful!",
+        error: "Authentication failed!",
+      }
+    );
   };
+  
 
   return (
     <div className="bg-[#080D18] min-h-screen flex flex-col items-center justify-center ">

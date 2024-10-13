@@ -158,7 +158,7 @@ const AddEvent = () => {
             type="file"
             className="p-2 rounded-md bg-gray-800 border border-gray-700 focus:outline-none"
             onChange={(e) => setImage(e.target.files[0])}
-            required // Made it required so an image must be uploaded
+            required 
           />
         </div>
 
