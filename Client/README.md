@@ -1,8 +1,35 @@
-# React + Vite
+# INVITE - Event Management Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+INVITE is a full-stack event management platform where **admins** can create and manage events, and **users** can explore, book, and attend events with ease. Built with the MERN stack (MongoDB, Express.js, React.js, and Node.js), INVITE aims to simplify the event management process for organizers and participants.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
+
+### Admin Features
+- Create, update, and delete events.
+- Manage event details including name, date, venue, and capacity.
+- View and track event bookings.
+  
+### User Features
+- Explore events by categories and search for upcoming events.
+- Book tickets for events with a simple interface.
+
+---
+
+## Tech Stack
+
+**Frontend**:  
+- React.js (UI framework)  
+- TailwindCSS (for styling)
+
+**Backend**:  
+- Node.js (runtime environment)  
+- Express.js (backend framework)
+
+**Database**:  
+- MongoDB (NoSQL database)
+
+**Additional Tools**:  
+- JWT (JSON Web Token) for authentication  
+- Cloudinary/Firebase (optional for image storage)
