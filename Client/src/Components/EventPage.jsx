@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
 
-const EventPage = ({ onNavigate }) => {
+
+const EventPage = () => {
+  const token = localStorage.getItem("token");
+  const [username,setUsername] = useState(" ");
   const [events, setEvents] = useState([]);
+  
 
   useEffect(() => {
     getEvents();
+    getuserbyid();
   }, []);
 
   const getEvents = async () => {
@@ -22,15 +29,32 @@ const EventPage = ({ onNavigate }) => {
   };
 
 
+  const getuserbyid = async() => {
+    try{
+      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getuserbyid`, {
+        headers : {
+          Authorization : `header ${token}`
+        }
+      })
+      setUsername(res.data.user.username);
+      console.log(res.data);
+    }
+    catch(err){
+      console.log("error");
+      toast.error("Invalid user");
+    }
+  }
+
   return (
     <div className="bg-gradient-to-b from-[#080D18] to-[#1A1F2E] min-h-screen text-white">
       <header className="bg-[#1A1F2E] shadow-lg p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <Link to="/"><h1 className="font-bold text-2xl">InVITE</h1></Link>
           <h2 className="font-medium text-lg">All Events</h2>
-          <h2 className="text-lg">Welcome, User</h2>
+          <h2 className="text-lg">Welcome, {username}</h2>
         </div>
       </header>
+      <hr className="border-gray-400"/>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-semibold mb-10 text-center">Upcoming Events</h1>

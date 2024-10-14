@@ -1,11 +1,15 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 const AdminDashboard = () => {
   const [events, setEvents] = useState([]);
+  const [adminname,setAdminname] = useState(" ");
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     getAdminEvents();
+    getadminbyid();
   }, []);
 
   const getAdminEvents = async () => {
@@ -28,19 +32,33 @@ const AdminDashboard = () => {
     }
   };
 
+  const getadminbyid = async() =>{
+    try{
+      const res = await axios.get(`${import.meta.env.VITE_SERVER_URL}/getadminbyid`,{
+        headers:{
+          Authorization : `Bearer ${token}`
+        }
+      })
+      setAdminname(res.data.user.username);
+    }catch(err){
+      console.log("error");
+    }
+  }
+
   return (
     <div className="bg-gradient-to-b from-[#080D18] to-[#1A1F2E] min-h-screen text-white">
       <header className="bg-[#1A1F2E] shadow-lg p-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h2 className="text-lg">Welcome, Admin</h2>
           <Link to="/"><h1 className="font-bold text-2xl">InVITE</h1></Link>
           <Link to="/addevent"><button
             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-full transition duration-300 flex items-center"
           >
             Add Event
           </button></Link>
+          <h2 className="text-lg">Welcome, {adminname}</h2>
         </div>
       </header>
+      <hr />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-center font-bold text-3xl mb-8">My Events</h1>

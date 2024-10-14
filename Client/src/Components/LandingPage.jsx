@@ -3,7 +3,13 @@ import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
-    <div className="bg-[#080D18] min-h-screen flex flex-col text-white">
+    <div className="bg-[#080D18] min-h-screen flex flex-col text-white relative overflow-hidden">
+      <div className="absolute ml-[200px] top-[-100px]">
+        <div
+          className="h-60 w-60 bg-blue-900 rounded-full blur-xl opacity-25"
+        ></div>
+      </div>
+
       <header className="flex justify-between items-center p-6">
         <h1 className="text-3xl font-semibold">InVITE</h1>
         <Link to="/auth">
@@ -35,7 +41,7 @@ const LandingPage = () => {
           </p>
 
           <Link to="/userauth">
-            <button className="bg-blue-700 px-8 py-3 rounded-md text-lg font-semibold hover:bg-blue-800 transition duration-300">
+            <button className="relative bg-blue-700 px-8 py-3 rounded-md text-lg font-semibold hover:bg-blue-800 transition duration-300">
               Get Started
             </button>
           </Link>
