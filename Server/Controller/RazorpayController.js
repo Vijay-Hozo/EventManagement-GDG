@@ -23,35 +23,55 @@ const createBooking = async(req,res) => {
     })
 }
 
-const confirmBooking = async(req,res,next) => {
-    try{
-        var newevent = new Event.model({
-        eventName : req.body.eventName,
-        eventDate : req.body.eventDate,
-        eventTime : req.body.eventTime,
-        eventLocation : req.body.eventLocation,
-        eventPrice : req.body.eventPrice,
-        eventFee : req.body.eventFee,
-        payments : []
-    })
-    let payment = {
-        paymentId : req.body.paymentId,
-        orderId : req.body.orderId,
-        eventFee : req.body.eventPrice,
+const confirmBooking = async (req, res) => {
+    try {
+      const {
+        eventName,
+        eventDate,
+        eventTime,
+        eventLocation,
+        eventPrice,
+        eventFee,
+        paymentId,
+        orderId,
+      } = req.body;
+  
+      if (!eventName || !paymentId || !orderId) {
+        return res.status(400).json({
+          status: "fail",
+          message: "Missing required fields.",
+        });
+      }
+  
+      const newEvent = new Event({
+        eventName,
+        eventDate,
+        eventTime,
+        eventLocation,
+        eventPrice,
+        eventFee,
+        payments: [
+          {
+            paymentId,
+            orderId,
+            eventFee,
+          },
+        ],
+      });
+  
+      await newEvent.save();
+  
+      res.status(200).json({
+        status: "success",
+        message: "Payment confirmed and event booked.",
+      });
+    } catch (err) {
+      console.error("Error confirming booking:", err.message);
+      res.status(500).json({
+        status: "fail",
+        message: "Internal server error.",
+      });
     }
-    newevent.payments = [...newevent.payments,payment]
-    await newevent.save();
-    res.status(200).json({
-        status : "success",
-        message : "Payment confirmed"
-    })
-}
-catch(err){
-    res.status(500).json({
-        status : "fail",
-        message : err.message
-    })
-}
-}
-
+  };
+  
 module.exports = {createBooking, confirmBooking }
