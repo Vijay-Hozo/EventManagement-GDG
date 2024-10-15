@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import djimage from "../assets/Dj.jpg";
-import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EventBook = () => {
+  const formatDate = (dateString) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, options);
+  };
   const { id } = useParams();
   const [event, setEvent] = useState(null);
 
@@ -20,7 +25,51 @@ const EventBook = () => {
       setEvent(res.data.event);
       console.log(res);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
+    }
+  };
+
+  const handleBook = async () => {
+    try {
+      const orderResponse = await axios.post(
+        `${import.meta.env.VITE_SERVER_URL}/createbooking`,
+        { bookingamount: event.eventFee }
+      );
+      const { order } = orderResponse.data;
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID, 
+        amount: order.amount,
+        currency: order.currency,
+        name: event.eventName,
+        description: "Event Booking",
+        image: event.eventImage || djimage,
+        order_id: order.id,
+        handler: async (response) => {
+          try {
+            await axios.post(`${import.meta.env.VITE_SERVER_URL}/confirmbooking`, {
+              eventName: event.eventName,
+              eventDate: event.eventDate,
+              eventTime: event.eventTime,
+              eventLocation: event.eventLocation,
+              eventFee: event.eventFee,
+              paymentId: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+            });
+            toast.success("Payment successful! Booking confirmed.");
+          } catch (err) {
+            console.error("Payment confirmation failed", err);
+            toast.error("Payment successful, but booking confirmation failed.");
+          }
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (err) {
+      console.error("Booking failed", err);
+      alert("Booking failed. Please try again.");
     }
   };
 
@@ -55,11 +104,11 @@ const EventBook = () => {
             </h1>
             <p className=" mb-4">{event.eventDescription}</p>
             <p className=" mb-4">Time: {event.eventTime}</p>
-            <p className=" mb-4">Date: {event.eventDate}</p>
+            <p className=" mb-4">Date: {formatDate(event.eventDate)}</p>
             <p className=" mb-4">Location: {event.eventLocation}</p>
             <p className=" mb-4">Fee: ₹{event.eventFee}</p>
             <p className=" mb-4">Tickets Available: {event.tickets}</p>
-            <button className="bg-blue-600 p-2 rounded-md">Book Now</button>
+            <button onClick={handleBook} className="bg-blue-600 p-2 rounded-md">Book Now</button>
           </div>
         </div>
       </div>
