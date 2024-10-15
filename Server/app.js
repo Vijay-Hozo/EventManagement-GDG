@@ -7,6 +7,7 @@ require("dotenv").config();
 const adminRouter = require('./Router/AdminRouter');
 const userRouter = require('./Router/UserRouter');
 const eventRouter = require('./Router/EventRouter');
+const paymentRouter = require('./Router/PaymentRouter')
 
 const app = express();
 app.use(cors());
@@ -24,6 +25,7 @@ mongoose.connect(
 app.use('/',adminRouter);
 app.use('/',userRouter);
 app.use('/',eventRouter);
+app.use('/',paymentRouter);
 
 app.listen(3000,()=>{
     console.log("Server is running on port 3000")

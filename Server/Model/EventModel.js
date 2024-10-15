@@ -36,6 +36,9 @@ const eventSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref : 'Admin',
         required:true
+    },
+    payment : {
+        type : Array,
     }
 })
 
